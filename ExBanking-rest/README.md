@@ -7,7 +7,7 @@
   npm start
   ```
 
-- Execute in terminal to run tests:
+- To run tests, execute the following command in another terminal:
   ```bash
   npm test
   ```
