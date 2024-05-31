@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "dependencies": {
+    "artillery": "^2.0.14",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.27.0",
+    "prettier": "^3.2.5",
+    "sqlite3": "^5.1.7",
+    "unique-names-generator": "^4.7.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "start": "node server",
+    "test": "npx jest"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.8",
+    "@grpc/proto-loader": "^0.7.13",
+    "artillery": "^2.0.14",
+    "artillery-engine-grpc": "github:KonstaL/artillery-engine-grpc",
+    "dotenv": "^16.4.5",
+    "prettier": "^3.2.5",
+    "sqlite3": "^5.1.7",
+    "unique-names-generator": "^4.7.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "start": "node server",
+    "test": "npx jest"
+  }
+}

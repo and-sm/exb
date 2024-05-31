@@ -1,0 +1,15 @@
+config:
+  target: "http://localhost:3000"
+  plugins:
+    fake-data: {}
+  phases:
+    - duration: 5
+      arrivalRate: 5
+      name: "Load"
+scenarios:
+  - name: "Test /create_user endpoint"
+    flow:
+      - post:
+          url: "/create_user"
+          json:
+            name: "{{ $randFullName() }}"

@@ -1,0 +1,21 @@
+config:
+  target: 127.0.0.1:50051
+  plugins:
+    fake-data: {}
+  phases:
+    - duration: 5
+      arrivalRate: 5
+      name: "Load"
+  engines:
+    grpc:
+      protobufDefinition:
+        filepath: /protos/user.proto
+        package: user
+        service: UserService
+
+scenarios:
+  - name: "Test user creation"
+    engine: grpc
+    flow:
+      - CreateUser:
+          name: "{{ $randFullName() }}"

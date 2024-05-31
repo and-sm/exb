@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
+  rpc DepositUser (DepositRequest) returns (DepositResponse) {}
+  rpc WithdrawUser (WithdrawRequest) returns (WithdrawResponse) {}
+  rpc UserBalance (UserBalanceRequest) returns (UserBalanceResponse) {}
+  rpc SendFunds (SendRequest) returns (SendResponse) {}
+}
+
+message CreateUserRequest {
+  string name = 1;
+}
+
+message CreateUserResponse {
+  optional string name = 1;
+  optional string uuid = 2;
+  optional int32 status = 3;
+  optional string message = 4;
+}
+
+message DepositRequest {
+  string uuid = 1;
+  float amount = 2;
+}
+
+message DepositResponse {
+  int32 status = 1;
+  optional string message = 2;
+}
+
+message WithdrawRequest {
+  string uuid = 1;
+  float amount = 2;
+}
+
+message WithdrawResponse {
+  int32 status = 1;
+  optional string message = 2;
+}
+
+message UserBalanceRequest {
+  string uuid = 1;
+}
+
+message UserBalanceResponse {
+  optional string uuid = 1;
+  optional float amount = 2;
+  optional int32 status = 3;
+  optional string message = 4;
+}
+
+message SendRequest {
+  string fromId = 1;
+  string toId = 2;
+  float amount = 3;
+}
+
+message SendResponse {
+  int32 status = 1;
+  optional string message = 2;
+  }
