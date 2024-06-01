@@ -15,7 +15,7 @@
 
 ### **Tests list:**
 
-Open https://and-sm.github.io/
+Open https://and-sm.github.io/exb/
 
 ### **Known issue:**
 

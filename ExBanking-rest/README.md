@@ -15,7 +15,7 @@
 
 ### **Tests cases documentation:**
 
-Open https://and-sm.github.io/
+Open https://and-sm.github.io/exb/
 
 ### ** Tests output example: **
 
