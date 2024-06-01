@@ -2,11 +2,7 @@ const { db } = require("../db");
 const { v4: uuidv4 } = require("uuid");
 
 const checkAmountIsNegative = (amount, reject) => {
-  if (amount <= 0) {
-    reject(new Error("Amount must be positive"));
-    return true;
-  }
-  return false;
+  return amount <= 0;
 };
 
 const createUser = (name, amount) => {
@@ -56,7 +52,7 @@ const depositAmount = (uuid, amount) => {
 const withdrawAmount = (uuid, amount) => {
   return new Promise(async (resolve, reject) => {
     if (checkAmountIsNegative(amount, reject)) {
-      return;
+      reject(new Error("Amount must be positive"));
     }
     if (typeof amount !== "number") {
       reject(new Error("Not a number"));
@@ -98,52 +94,63 @@ const getUserBalance = (uuid) => {
 
 const sendFunds = (fromId, toId, amount) => {
   return new Promise((resolve, reject) => {
-    if (checkAmountIsNegative(amount, reject)) {
-      return;
+    if (checkAmountIsNegative(amount)) {
+      reject(new Error("Amount must be positive"));
     }
+
     if (typeof amount !== "number") {
-      reject(new Error("Not a number"));
+      reject(new Error("Amount must be a number"));
     }
-    db.serialize(() => {
-      db.run("BEGIN TRANSACTION");
-      db.get(
-        "SELECT amount FROM users WHERE uuid = ?",
-        [fromId],
-        (err, row) => {
-          if (err) {
-            db.run("ROLLBACK");
-            reject(err);
-          } else if (!row || row.amount < amount) {
-            db.run("ROLLBACK");
-            reject(new Error("Insufficient funds"));
-          } else {
-            db.run(
-              "UPDATE users SET amount = amount - ? WHERE uuid = ?",
-              [amount, fromId],
-              (err) => {
-                if (err) {
-                  db.run("ROLLBACK");
-                  reject(err);
-                } else {
-                  db.run(
-                    "UPDATE users SET amount = amount + ? WHERE uuid = ?",
-                    [amount, toId],
-                    (err) => {
-                      if (err) {
-                        db.run("ROLLBACK");
-                        reject(err);
-                      } else {
-                        db.run("COMMIT");
-                        resolve({ fromId, toId, amount });
-                      }
-                    },
-                  );
-                }
-              },
-            );
-          }
-        },
-      );
+    db.serialize(async () => {
+      try {
+        await runQuery("BEGIN TRANSACTION");
+
+        const row = await getQuery("SELECT amount FROM users WHERE uuid = ?", [
+          fromId,
+        ]);
+        if (!row || row.amount < amount) {
+          reject(new Error("Insufficient funds"));
+        }
+
+        await runQuery("UPDATE users SET amount = amount - ? WHERE uuid = ?", [
+          amount,
+          fromId,
+        ]);
+        await runQuery("UPDATE users SET amount = amount + ? WHERE uuid = ?", [
+          amount,
+          toId,
+        ]);
+
+        await runQuery("COMMIT");
+        resolve({ fromId, toId, amount });
+      } catch (err) {
+        await runQuery("ROLLBACK");
+        reject(err);
+      }
+    });
+  });
+};
+
+const runQuery = (query, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.run(query, params, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(this);
+      }
+    });
+  });
+};
+
+const getQuery = (query, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.get(query, params, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
     });
   });
 };

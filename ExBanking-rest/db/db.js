@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 
 const checkAmountIsNegative = (amount, reject) => {
   return amount <= 0;
-
 };
 
 // DEBUG
@@ -107,34 +106,42 @@ export const getUserBalance = (uuid) => {
 };
 
 export const sendFunds = async (fromId, toId, amount) => {
-    return new Promise((resolve, reject) => {
-      if (checkAmountIsNegative(amount)) {
-        reject(new Error("Amount must be positive"));
-      }
+  return new Promise((resolve, reject) => {
+    if (checkAmountIsNegative(amount)) {
+      reject(new Error("Amount must be positive"));
+    }
 
-      if (typeof amount !== "number") {
-        reject(new Error("Amount must be a number"));
-      }
-      db.serialize(async () => {
-        try {
-          await runQuery("BEGIN TRANSACTION");
+    if (typeof amount !== "number") {
+      reject(new Error("Amount must be a number"));
+    }
+    db.serialize(async () => {
+      try {
+        await runQuery("BEGIN TRANSACTION");
 
-          const row = await getQuery("SELECT amount FROM users WHERE uuid = ?", [fromId]);
-          if (!row || row.amount < amount) {
-            reject(new Error("Insufficient funds"));
-          }
-
-          await runQuery("UPDATE users SET amount = amount - ? WHERE uuid = ?", [amount, fromId]);
-          await runQuery("UPDATE users SET amount = amount + ? WHERE uuid = ?", [amount, toId]);
-
-          await runQuery("COMMIT");
-          resolve({ fromId, toId, amount });
-        } catch (err) {
-          await runQuery("ROLLBACK");
-          reject(err);
+        const row = await getQuery("SELECT amount FROM users WHERE uuid = ?", [
+          fromId,
+        ]);
+        if (!row || row.amount < amount) {
+          reject(new Error("Insufficient funds"));
         }
-      });
+
+        await runQuery("UPDATE users SET amount = amount - ? WHERE uuid = ?", [
+          amount,
+          fromId,
+        ]);
+        await runQuery("UPDATE users SET amount = amount + ? WHERE uuid = ?", [
+          amount,
+          toId,
+        ]);
+
+        await runQuery("COMMIT");
+        resolve({ fromId, toId, amount });
+      } catch (err) {
+        await runQuery("ROLLBACK");
+        reject(err);
+      }
     });
+  });
 };
 
 const runQuery = (query, params = []) => {

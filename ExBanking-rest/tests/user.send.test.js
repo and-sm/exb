@@ -66,11 +66,11 @@ test("Send funds to non-existing account", async () => {
 
 test("Send zero amount", async () => {
   await api
-      .postSend({ fromId: user1.data.uuid, toId: user2.data.uuid, amount: 0 })
-      .then((res) => {
-        expect(res.error).toBe("Bad request");
-        expect(res.status).toBe(400);
-      });
+    .postSend({ fromId: user1.data.uuid, toId: user2.data.uuid, amount: 0 })
+    .then((res) => {
+      expect(res.error).toBe("Bad request");
+      expect(res.status).toBe(400);
+    });
 });
 
 test("Send negative amount", async () => {

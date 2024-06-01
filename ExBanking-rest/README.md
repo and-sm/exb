@@ -17,7 +17,6 @@
 
 Open tests_list.html in any browser.
 
-
 ### ** Tests output example: **
 
 ```bash
@@ -31,14 +30,14 @@ Open tests_list.html in any browser.
     console.log
       Stdout: Test run id: tt4kn_7g5x9dmb6t69abx5af6qxj9h487qm_hwny
       Phase started: Load (index: 0, duration: 5s) 18:52:40(+0300)
- 
+
       Phase completed: Load (index: 0, duration: 5s) 18:52:45(+0300)
 
       --------------------------------------
       Metrics for period to: 18:52:50(+0300) (width: 4.613s)
       --------------------------------------
 
-      
+
       http.codes.200: ................................................................ 25
       http.downloaded_bytes: ......................................................... 1784
       http.request_rate: ............................................................. 5/sec

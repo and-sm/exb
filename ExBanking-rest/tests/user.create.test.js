@@ -29,9 +29,9 @@ describe("Request validation tests", () => {
 
 test("Existing user", async () => {
   const randomName = uniqueNamesGenerator({ dictionaries: [names, starWars] });
-  await api.postCreateUser({name: randomName}).then(res => res)
-  return api.postCreateUser({name: randomName}).then((res) => {
-    expect(res.error).toBe("User already exists")
+  await api.postCreateUser({ name: randomName }).then((res) => res);
+  return api.postCreateUser({ name: randomName }).then((res) => {
+    expect(res.error).toBe("User already exists");
     expect(res.status).toBe(400);
   });
 });

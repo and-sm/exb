@@ -22,6 +22,7 @@ Open tests_list.html in any browser.
 The functional test configured for Artillery library does not run on the gRPC backend. I used a patched version (github://artillery-engine-grpc), but no luck at this moment.
 
 ### **Tests output example:**
+
 ```bash
 PASS  tests/user.send.test.js
 PASS  tests/non-functional.test.js

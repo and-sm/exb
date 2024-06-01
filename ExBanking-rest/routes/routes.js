@@ -9,20 +9,25 @@ import {
 } from "../db/db.js";
 
 const ERRORS = {
-  'Insufficient funds': 400,
-  'Amount must be positive': 400,
-  'Bad request': 400,
-  'User already exists': 400,
-  'Not a number': 400,
-  'User not found': 404,
-  'Internal Server Error': 500
-}
+  "Insufficient funds": 400,
+  "Amount must be positive": 400,
+  "Bad request": 400,
+  "User already exists": 400,
+  "Not a number": 400,
+  "User not found": 404,
+  "Internal Server Error": 500,
+};
 
-
-function errorHandler (err, reply, errors,
-                       defaultError = { error: 'Unknown Error' }, defaultCode = 500) {
-  if (!Object.hasOwn(errors, err.message)) return reply.code(defaultCode).send(defaultError)
-  return reply.code(errors[err.message]).send({ error: err.message })
+function errorHandler(
+  err,
+  reply,
+  errors,
+  defaultError = { error: "Unknown Error" },
+  defaultCode = 500,
+) {
+  if (!Object.hasOwn(errors, err.message))
+    return reply.code(defaultCode).send(defaultError);
+  return reply.code(errors[err.message]).send({ error: err.message });
 }
 
 export async function routes(fastify, options) {

@@ -6,26 +6,21 @@ const {
 } = require("unique-names-generator");
 const { user_proto } = require("../client");
 const grpc = require("@grpc/grpc-js");
-const { runGrpcCall, runGrpcCallWithDone } = require("./utils");
+const { runGrpcCall } = require("./utils");
 
 const client = new user_proto.UserService(
   process.env.GRPC_HOST,
   grpc.credentials.createInsecure(),
 );
 
-test("Create a user", (done) => {
+test("Create a user", async () => {
   const randomName = uniqueNamesGenerator({ dictionaries: [names, starWars] });
-  const validateResponse = (res) => {
-    expect(res.name).toBe(randomName);
-    expect(res.uuid).toMatch(
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-    );
-  };
-  runGrpcCallWithDone(
-    client.CreateUser.bind(client),
-    { name: randomName },
-    validateResponse,
-    done,
+  const user = await runGrpcCall(client.CreateUser.bind(client), {
+    name: randomName,
+  });
+  expect(user.name).toBe(randomName);
+  expect(user.uuid).toMatch(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
   );
 });
 

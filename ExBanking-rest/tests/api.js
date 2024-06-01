@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const url = process.env.HOST;
 
@@ -22,7 +22,7 @@ const postCreateUser = (body) =>
       )
       .then(({ status, data }) => {
         if (status >= 400) {
-          resolve({ status, error: data.error});
+          resolve({ status, error: data.error });
         } else {
           resolve({ data: data, status: status });
         }
