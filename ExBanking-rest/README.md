@@ -15,7 +15,7 @@
 
 ### **Tests cases documentation:**
 
-Open tests_list.html in any browser.
+Open https://and-sm.github.io/
 
 ### ** Tests output example: **
 
