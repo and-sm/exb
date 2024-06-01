@@ -1,13 +1,14 @@
 ### **How to run:**
 
-- Use node 20+ (I used Ubuntu 22.04)
+- Use node 20+
 - Execute in terminal to run backend:
+
   ```bash
   npm i
   npm start
   ```
 
-- To run tests, execute the following command in another terminal:
+- Execute in terminal to run tests:
   ```bash
   npm test
   ```
@@ -23,7 +24,7 @@ Open tests_list.html in any browser.
 
  PASS  tests/user.create.test.js
  PASS  tests/user.send.test.js
- PASS  tests/functional.test.js (9.518 s)
+ PASS  tests/non-functional.test.js (9.518 s)
 
   ● Console
 
@@ -92,7 +93,7 @@ Open tests_list.html in any browser.
         p95: ......................................................................... 20.3
         p99: ......................................................................... 21.1
 
-      at log (tests/functional.test.js:35:15)
+      at log (tests/non-functional.test.js:35:15)
 
 
 Test Suites: 3 passed, 3 total

@@ -2,11 +2,8 @@ import { db } from "../server.js";
 import { v4 as uuidv4 } from "uuid";
 
 const checkAmountIsNegative = (amount, reject) => {
-  if (amount <= 0) {
-    reject(new Error("Amount must be positive"));
-    return true;
-  }
-  return false;
+  return amount <= 0;
+
 };
 
 // DEBUG
@@ -41,8 +38,8 @@ export const createUser = (name, amount) => {
 
 export const depositAmount = (uuid, amount) => {
   return new Promise(async (resolve, reject) => {
-    if (checkAmountIsNegative(amount, reject)) {
-      return;
+    if (checkAmountIsNegative(amount)) {
+      reject(new Error("Amount must be positive"));
     }
     if (typeof amount !== "number") {
       reject(new Error("Not a number"));
@@ -109,54 +106,57 @@ export const getUserBalance = (uuid) => {
   });
 };
 
-export const sendFunds = (fromId, toId, amount) => {
-  return new Promise((resolve, reject) => {
-    if (checkAmountIsNegative(amount, reject)) {
-      return;
-    }
-    if (typeof amount !== "number") {
-      reject(new Error("Not a number"));
-    }
-    db.serialize(() => {
-      db.run("BEGIN TRANSACTION");
-      db.get(
-        "SELECT amount FROM users WHERE uuid = ?",
-        [fromId],
-        (err, row) => {
-          if (err) {
-            db.run("ROLLBACK");
-            reject(err);
-          } else if (!row || row.amount < amount) {
-            db.run("ROLLBACK");
+export const sendFunds = async (fromId, toId, amount) => {
+    return new Promise((resolve, reject) => {
+      if (checkAmountIsNegative(amount)) {
+        reject(new Error("Amount must be positive"));
+      }
+
+      if (typeof amount !== "number") {
+        reject(new Error("Amount must be a number"));
+      }
+      db.serialize(async () => {
+        try {
+          await runQuery("BEGIN TRANSACTION");
+
+          const row = await getQuery("SELECT amount FROM users WHERE uuid = ?", [fromId]);
+          if (!row || row.amount < amount) {
             reject(new Error("Insufficient funds"));
-          } else {
-            db.run(
-              "UPDATE users SET amount = amount - ? WHERE uuid = ?",
-              [amount, fromId],
-              (err) => {
-                if (err) {
-                  db.run("ROLLBACK");
-                  reject(err);
-                } else {
-                  db.run(
-                    "UPDATE users SET amount = amount + ? WHERE uuid = ?",
-                    [amount, toId],
-                    (err) => {
-                      if (err) {
-                        db.run("ROLLBACK");
-                        reject(err);
-                      } else {
-                        db.run("COMMIT");
-                        resolve({ fromId, toId, amount });
-                      }
-                    },
-                  );
-                }
-              },
-            );
           }
-        },
-      );
+
+          await runQuery("UPDATE users SET amount = amount - ? WHERE uuid = ?", [amount, fromId]);
+          await runQuery("UPDATE users SET amount = amount + ? WHERE uuid = ?", [amount, toId]);
+
+          await runQuery("COMMIT");
+          resolve({ fromId, toId, amount });
+        } catch (err) {
+          await runQuery("ROLLBACK");
+          reject(err);
+        }
+      });
+    });
+};
+
+const runQuery = (query, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.run(query, params, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(this);
+      }
+    });
+  });
+};
+
+const getQuery = (query, params = []) => {
+  return new Promise((resolve, reject) => {
+    db.get(query, params, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row);
+      }
     });
   });
 };

@@ -22,7 +22,7 @@ const postCreateUser = (body) =>
       )
       .then(({ status, data }) => {
         if (status >= 400) {
-          resolve({ status, error: data.error || "Unknown error" });
+          resolve({ status, error: data.error});
         } else {
           resolve({ data: data, status: status });
         }
@@ -45,7 +45,7 @@ const postDeposit = (body) =>
       )
       .then(({ status, data }) => {
         if (status >= 400) {
-          resolve({ status, error: data.error || "Unknown error" });
+          resolve({ status, error: data.error });
         } else {
           resolve({ data: data, status: status });
         }
@@ -68,7 +68,7 @@ const postSend = (body) =>
       )
       .then(({ status, data }) => {
         if (status >= 400) {
-          resolve({ status, error: data.error || "Unknown error" });
+          resolve({ status, error: data.error });
         } else {
           resolve({ data: data, status: status });
         }
@@ -90,7 +90,7 @@ const getBalance = (uuid) =>
       )
       .then(({ status, data }) => {
         if (status >= 400) {
-          resolve({ status, error: data.error || "Unknown error" });
+          resolve({ status, error: data.error });
         } else {
           resolve({ data: data, status: status });
         }

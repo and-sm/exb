@@ -1,6 +1,6 @@
 ### **How to run:**
 
-- Use node 20+ (I used Ubuntu 22.04)
+- Use node 20+
 - Execute in terminal to run backend:
 
   ```bash
@@ -8,7 +8,7 @@
   npm start
   ```
 
-- To run tests, execute the following command in another terminal:
+- Execute in terminal to run tests:
   ```bash
   npm test
   ```
@@ -24,7 +24,7 @@ The functional test configured for Artillery library does not run on the gRPC ba
 ### **Tests output example:**
 ```bash
 PASS  tests/user.send.test.js
-PASS  tests/functional.test.js
+PASS  tests/non-functional.test.js
 PASS  tests/user.create.test.js
 
 Test Suites: 3 passed, 3 total
